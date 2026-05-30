@@ -11,7 +11,25 @@ A clinical Blood Glucose Monitoring Web Application built with **Flask and Pytho
 
 ## 📸 Screenshots
 
-> Login Page | Patient Dashboard | Stats & AI Prediction | Doctor Panel
+### Login Page
+
+<img src="screenshots/login.png" width="100%">
+
+### Patient Dashboard
+
+<img src="screenshots/dashboard.png" width="48%"> <img src="screenshots/dashboard2.png" width="48%">
+
+### Stats & AI Prediction
+
+<img src="screenshots/stats.png" width="48%"> <img src="screenshots/airisk.png" width="48%">
+
+### Doctor Panel
+
+<img src="screenshots/doctor.png" width="48%"> <img src="screenshots/doctor2.png" width="48%">
+
+### Email Alert
+
+<img src="screenshots/emailalert.jpeg" width="48%"> <img src="screenshots/emailalert2.jpeg" width="48%">
 
 ---
 
