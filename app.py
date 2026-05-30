@@ -12,12 +12,16 @@ from collections import Counter
 from flask import Flask, render_template, request, redirect, session, url_for
 import json, os
 from datetime import date
+from dotenv import load_dotenv
+load_dotenv()
+print("SECRET KEY:",os.getenv("SECRET_KEY"))
+import os
 
-app = Flask(__name__)
-app.secret_key = "glucose_secret_123"
-EMAIL_SENDER   = "madhanperumaltsivaji2006@gmail.com"  
-EMAIL_PASSWORD = "icmesfvdabvjmwqo"    
-DOCTOR_EMAIL   = "madhanperumal2006@gmail.com"   
+app = Flask(__name__) 
+app.secret_key = os.getenv("SECRET_KEY")
+EMAIL_SENDER   = os.getenv("EMAIL_SENDER")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+DOCTOR_EMAIL   = os.getenv("DOCTOR_EMAIL")
 
 def send_alert_email(patient_name, patient_email, glucose, status, meal, date):
     try:
