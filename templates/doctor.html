@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Doctor Panel</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { background: #0f172a; color: white; }
+    .navbar { background: #1e293b; padding: 14px 30px; display: flex; justify-content: space-between; align-items: center; }
+    .navbar h1 { font-size: 18px; }
+    .logout { background: #334155; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+    .logout:hover { background: #475569; }
+    .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+    .table-card { background: #1e293b; border-radius: 14px; padding: 24px; }
+    .section-title { font-size: 16px; font-weight: bold; color: #94a3b8; margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; color: #64748b; font-size: 12px; padding: 8px 12px; border-bottom: 1px solid #334155; }
+    td { padding: 12px; font-size: 13px; border-bottom: 1px solid #0f172a; }
+    tr:hover td { background: #0f172a; }
+    .badge { padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: bold; }
+    .normal      { background: #14532d; color: #4ade80; }
+    .prediabetic { background: #78350f; color: #fbbf24; }
+    .diabetic    { background: #7f1d1d; color: #f87171; }
+    .low         { background: #1e3a5f; color: #60a5fa; }
+    .empty { color: #475569; text-align: center; padding: 30px; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <h1>🩺 Doctor Panel — {{ session['name'] }}</h1>
+  <a href="/logout"><button class="logout">Logout</button></a>
+</div>
+
+<div class="container">
+  <div class="table-card">
+    <div class="section-title">All Patient Readings</div>
+    {% if readings %}
+    <table>
+      <tr>
+        <th>Patient</th>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Glucose</th>
+        <th>Status</th>
+      </tr>
+      {% for r in readings %}
+      <tr>
+        <td>{{ r.username }}</td>
+        <td>{{ r.date }}</td>
+        <td>{{ r.meal }}</td>
+        <td><b>{{ r.glucose }} mg/dL</b></td>
+        <td><span class="badge {{ r.status }}">{{ r.status.title() }}</span></td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <div class="empty">No patient readings yet</div>
+    {% endif %}
+  </div>
+</div>
+
+</body>
+</html>

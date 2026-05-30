@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stats & AI</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { background: #0f172a; color: white; }
+    .navbar { background: #1e293b; padding: 14px 30px; display: flex; justify-content: space-between; align-items: center; }
+    .navbar h1 { font-size: 18px; }
+    .nav-links { display: flex; gap: 12px; align-items: center; }
+    .nav-links a { color: #94a3b8; text-decoration: none; font-size: 14px; }
+    .nav-links a:hover { color: white; }
+    .logout { background: #334155; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+    .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+    .card { background: #1e293b; border-radius: 14px; padding: 24px; margin-bottom: 24px; }
+    .card h2 { font-size: 15px; color: #94a3b8; margin-bottom: 16px; }
+
+    /* Stat cards */
+    .stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 24px; }
+    .stat-card { background: #1e293b; border-radius: 12px; padding: 16px; text-align: center; }
+    .stat-card .val { font-size: 26px; font-weight: bold; color: #3b82f6; }
+    .stat-card .lbl { font-size: 11px; color: #64748b; margin-top: 4px; }
+
+    /* Status breakdown */
+    .breakdown { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 24px; }
+    .bd-card { border-radius: 10px; padding: 14px; text-align: center; }
+    .bd-card .num { font-size: 22px; font-weight: bold; }
+    .bd-card .lbl { font-size: 11px; margin-top: 4px; opacity: 0.8; }
+    .bd-normal      { background: #14532d; color: #4ade80; }
+    .bd-prediabetic { background: #78350f; color: #fbbf24; }
+    .bd-diabetic    { background: #7f1d1d; color: #f87171; }
+    .bd-low         { background: #1e3a5f; color: #60a5fa; }
+
+    /* Graph */
+    .graph-img { width: 100%; border-radius: 10px; }
+
+    /* Risk score */
+    .risk-row { display: flex; align-items: center; gap: 20px; }
+    .risk-circle { width: 90px; height: 90px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; flex-shrink: 0; }
+    .risk-info { flex: 1; }
+    .risk-label { font-size: 16px; font-weight: bold; margin-bottom: 6px; }
+    .progress-bar { background: #334155; border-radius: 99px; height: 10px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 99px; transition: width 0.5s; }
+
+    /* Trend */
+    .trend-row { display: flex; align-items: center; gap: 16px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #334155; }
+    .trend-icon { font-size: 36px; }
+    .trend-info .direction { font-size: 16px; font-weight: bold; }
+    .trend-info .preds { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+
+    /* Recommendations */
+    .rec-item { background: #0f172a; border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; font-size: 14px; line-height: 1.6; }
+
+    .empty { color: #475569; text-align: center; padding: 40px; }
+    .back-btn { display: inline-block; margin-bottom: 20px; color: #3b82f6; text-decoration: none; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <h1>📊 Stats & AI Prediction</h1>
+  <div class="nav-links">
+    <a href="/dashboard">← Dashboard</a>
+    <a href="/logout"><button class="logout">Logout</button></a>
+  </div>
+</div>
+
+<div class="container">
+
+{% if stats %}
+
+  <!-- Summary Stats -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="val">{{ stats.total }}</div>
+      <div class="lbl">Total Readings</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">{{ stats.avg }}</div>
+      <div class="lbl">Average mg/dL</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" style="color:#ef4444">{{ stats.max }}</div>
+      <div class="lbl">Highest mg/dL</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" style="color:#22c55e">{{ stats.min }}</div>
+      <div class="lbl">Lowest mg/dL</div>
+    </div>
+  </div>
+
+  <!-- Status Breakdown -->
+  <div class="breakdown">
+    <div class="bd-card bd-normal">
+      <div class="num">{{ stats.normal }}</div>
+      <div class="lbl">Normal</div>
+    </div>
+    <div class="bd-card bd-prediabetic">
+      <div class="num">{{ stats.prediabetic }}</div>
+      <div class="lbl">Pre-Diabetic</div>
+    </div>
+    <div class="bd-card bd-diabetic">
+      <div class="num">{{ stats.diabetic }}</div>
+      <div class="lbl">Diabetic</div>
+    </div>
+    <div class="bd-card bd-low">
+      <div class="num">{{ stats.low }}</div>
+      <div class="lbl">Low</div>
+    </div>
+  </div>
+
+  <!-- Graph -->
+  {% if graph %}
+  <div class="card">
+    <h2>Glucose Trend Graph</h2>
+    <img class="graph-img" src="data:image/png;base64,{{ graph }}" alt="Glucose Graph">
+  </div>
+  {% endif %}
+
+  <!-- AI Risk Score -->
+  {% if risk_score >= 0 %}
+  <div class="card">
+    <h2>🤖 AI Risk Assessment</h2>
+    <div class="risk-row">
+
+      {% if risk_score < 25 %}
+        {% set r_color = "#22c55e" %}
+        {% set r_label = "Low Risk" %}
+        {% set r_bg = "#14532d" %}
+      {% elif risk_score < 50 %}
+        {% set r_color = "#f59e0b" %}
+        {% set r_label = "Moderate Risk" %}
+        {% set r_bg = "#78350f" %}
+      {% elif risk_score < 75 %}
+        {% set r_color = "#ef4444" %}
+        {% set r_label = "High Risk" %}
+        {% set r_bg = "#7f1d1d" %}
+      {% else %}
+        {% set r_color = "#f87171" %}
+        {% set r_label = "Critical Risk" %}
+        {% set r_bg = "#450a0a" %}
+      {% endif %}
+
+      <div class="risk-circle" style="background:{{ r_bg }};color:{{ r_color }}">
+        {{ risk_score }}<span style="font-size:12px">/100</span>
+      </div>
+      <div class="risk-info">
+        <div class="risk-label" style="color:{{ r_color }}">{{ r_label }}</div>
+        <div class="progress-bar" style="margin-top:8px">
+          <div class="progress-fill" style="width:{{ risk_score }}%;background:{{ r_color }}"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trend -->
+    {% if trend %}
+    <div class="trend-row">
+      <div class="trend-icon" style="color:{{ trend.color }}">{{ trend.icon }}</div>
+      <div class="trend-info">
+        <div class="direction" style="color:{{ trend.color }}">
+          {{ trend.direction }} — {{ trend.slope }} mg/dL per reading
+        </div>
+        <div class="preds">
+          Predicted next 3 readings:
+          {{ trend.next_preds[0] }} → {{ trend.next_preds[1] }} → {{ trend.next_preds[2] }} mg/dL
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Recommendations -->
+  <div class="card">
+    <h2>💡 Recommendations</h2>
+    {% for rec in recs %}
+    <div class="rec-item">{{ rec }}</div>
+    {% endfor %}
+  </div>
+
+{% else %}
+  <div class="empty">Add at least 2 readings to see your stats and AI prediction.</div>
+{% endif %}
+
+</div>
+</body>
+</html>

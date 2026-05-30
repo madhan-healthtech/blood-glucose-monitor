@@ -1,0 +1,17 @@
+{
+  "doctor@health.com": {
+    "password": "doctor123",
+    "role": "doctor",
+    "name": "Dr. Madhan"
+  },
+  "patient1@gmail.com": {
+    "password": "p1",
+    "role": "patient",
+    "name": "patient1"
+  },
+  "p2@gmail.com": {
+    "password": "p2",
+    "role": "patient",
+    "name": "patient 2"
+  }
+}

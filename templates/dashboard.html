@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { background: #0f172a; color: white; }
+    .navbar { background: #1e293b; padding: 14px 30px; display: flex; justify-content: space-between; align-items: center; }
+    .navbar h1 { font-size: 18px; color: white; }
+    .navbar span { color: #94a3b8; font-size: 14px; }
+    .logout { background: #334155; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+    .logout:hover { background: #475569; }
+    .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+    .section-title { font-size: 16px; font-weight: bold; color: #94a3b8; margin-bottom: 14px; }
+
+    /* Add reading form */
+    .form-card { background: #1e293b; border-radius: 14px; padding: 24px; margin-bottom: 30px; }
+    .form-card h2 { font-size: 16px; margin-bottom: 18px; color: white; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    label { color: #94a3b8; font-size: 12px; display: block; margin-bottom: 5px; margin-top: 12px; }
+    input, select { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 14px; }
+    .btn-add { margin-top: 16px; padding: 11px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: bold; width: 100%; }
+    .btn-add:hover { background: #2563eb; }
+
+    /* History table */
+    .table-card { background: #1e293b; border-radius: 14px; padding: 24px; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; color: #64748b; font-size: 12px; padding: 8px 12px; border-bottom: 1px solid #334155; }
+    td { padding: 12px; font-size: 13px; border-bottom: 1px solid #1e293b; }
+    tr:hover td { background: #0f172a; }
+
+    /* Status badges */
+    .badge { padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: bold; }
+    .normal      { background: #14532d; color: #4ade80; }
+    .prediabetic { background: #78350f; color: #fbbf24; }
+    .diabetic    { background: #7f1d1d; color: #f87171; }
+    .low         { background: #1e3a5f; color: #60a5fa; }
+
+    .empty { color: #475569; text-align: center; padding: 30px; font-size: 14px; }
+
+    /* Reference card */
+    .ref-card { background: #1e293b; border-radius: 14px; padding: 20px 24px; margin-top: 24px; }
+    .ref-card h3 { font-size: 14px; color: #94a3b8; margin-bottom: 12px; }
+    .ref-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .ref-item { background: #0f172a; border-radius: 10px; padding: 12px; }
+    .ref-item .type { font-size: 11px; color: #64748b; margin-bottom:6px; }
+    .ref-item .ranges { font-size: 11px; line-height: 1.8; }
+    .g { color: #4ade80; } .a { color: #fbbf24; } .r { color: #f87171; } .b { color: #60a5fa; }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <h1>🩸 Blood Glucose Monitor</h1>
+  <h1>🩸 Blood Glucose Monitor</h1>
+<a href="/stats" style="color:#3b82f6;text-decoration:none;font-size:14px;">📊 Stats & AI</a>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <span>👤 {{ session['name'] }}</span>
+    <a href="/logout"><button class="logout">Logout</button></a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Add Reading -->
+  <div class="form-card">
+    <h2>📊 Add New Reading</h2>
+    <form method="POST" action="/add">
+      <div class="row2">
+        <div>
+          <label>Date</label>
+          <input type="date" name="date" required value="{{ today }}">
+        </div>
+        <div>
+          <label>Measurement Type</label>
+          <select name="meal">
+            <option>Fasting</option>
+            <option>Post-Meal (2hr)</option>
+            <option>Random</option>
+          </select>
+        </div>
+      </div>
+      <label>Glucose Level (mg/dL)</label>
+      <input type="number" name="glucose" placeholder="e.g. 95" min="20" max="600" required>
+      <button class="btn-add" type="submit">Save Reading</button>
+    </form>
+  </div>
+
+  <!-- History -->
+  <div class="table-card">
+    <div class="section-title">Recent Readings</div>
+    {% if readings %}
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Glucose</th>
+        <th>Status</th>
+      </tr>
+      {% for r in readings %}
+      <tr>
+        <td>{{ r.date }}</td>
+        <td>{{ r.meal }}</td>
+        <td><b>{{ r.glucose }} mg/dL</b></td>
+        <td><span class="badge {{ r.status }}">{{ r.status.title() }}</span></td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <div class="empty">No readings yet — add your first reading above</div>
+    {% endif %}
+  </div>
+
+  <!-- Reference -->
+  <div class="ref-card">
+    <h3>📌 Reference Ranges</h3>
+    <div class="ref-grid">
+      <div class="ref-item">
+        <div class="type">Fasting</div>
+        <div class="ranges">
+          <span class="b">Low &lt; 70</span><br>
+          <span class="g">Normal 70–99</span><br>
+          <span class="a">Pre-DM 100–125</span><br>
+          <span class="r">Diabetic ≥ 126</span>
+        </div>
+      </div>
+      <div class="ref-item">
+        <div class="type">Post-Meal (2hr)</div>
+        <div class="ranges">
+          <span class="b">Low &lt; 70</span><br>
+          <span class="g">Normal 70–139</span><br>
+          <span class="a">Pre-DM 140–199</span><br>
+          <span class="r">Diabetic ≥ 200</span>
+        </div>
+      </div>
+      <div class="ref-item">
+        <div class="type">Random</div>
+        <div class="ranges">
+          <span class="b">Low &lt; 70</span><br>
+          <span class="g">Normal 70–139</span><br>
+          <span class="a">Pre-DM 140–199</span><br>
+          <span class="r">Diabetic ≥ 200</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

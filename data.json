@@ -1,0 +1,114 @@
+[
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-09",
+    "meal": "Random",
+    "glucose": 110.0,
+    "status": "normal"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-10",
+    "meal": "Random",
+    "glucose": 100.0,
+    "status": "normal"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-11",
+    "meal": "Random",
+    "glucose": 90.0,
+    "status": "normal"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-12",
+    "meal": "Random",
+    "glucose": 80.0,
+    "status": "normal"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-13",
+    "meal": "Fasting",
+    "glucose": 70.0,
+    "status": "normal"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-13",
+    "meal": "Random",
+    "glucose": 70.0,
+    "status": "normal"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-14",
+    "meal": "Random",
+    "glucose": 60.0,
+    "status": "low"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-15",
+    "meal": "Random",
+    "glucose": 50.0,
+    "status": "low"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-09",
+    "meal": "Fasting",
+    "glucose": 110.0,
+    "status": "prediabetic"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-10",
+    "meal": "Fasting",
+    "glucose": 100.0,
+    "status": "prediabetic"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-11",
+    "meal": "Fasting",
+    "glucose": 90.0,
+    "status": "normal"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-12",
+    "meal": "Fasting",
+    "glucose": 80.0,
+    "status": "normal"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-13",
+    "meal": "Fasting",
+    "glucose": 70.0,
+    "status": "normal"
+  },
+  {
+    "username": "patient1@gmail.com",
+    "date": "2026-05-14",
+    "meal": "Fasting",
+    "glucose": 60.0,
+    "status": "low"
+  },
+  {
+    "username": "p2@gmail.com",
+    "date": "2026-05-19",
+    "meal": "Fasting",
+    "glucose": 126.0,
+    "status": "diabetic"
+  },
+  {
+    "username": "p2@gmail.com",
+    "date": "2026-05-20",
+    "meal": "Fasting",
+    "glucose": 140.0,
+    "status": "diabetic"
+  }
+]
