@@ -5,7 +5,7 @@ A clinical Blood Glucose Monitoring Web Application built with **Flask and Pytho
 ---
 
 ## 🌐 Live Demo
-> Coming soon after deployment on Render
+https://blood-glucose-monitor-nn39.onrender.com
 
 ---
 
