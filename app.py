@@ -10,7 +10,7 @@ import base64
 import io
 from collections import Counter
 from flask import Flask, render_template, request, redirect, session, url_for
-import json, os
+import json, os, joblib
 from datetime import date
 from dotenv import load_dotenv
 load_dotenv()
@@ -336,6 +336,88 @@ def stats():
                            trend=trend,
                            recs=recs,
                            stats=stats_data)
+@app.route("/predict", methods=["GET", "POST"])
+def predict():
+    if "user" not in session: return redirect("/login")
+    
+    result = None
+    probability = None
+    risk_factors = []
+    
+    if request.method == "POST":
+        try:
+            # Load model
+            model    = joblib.load("model.pkl")
+            scaler   = joblib.load("scaler.pkl")
+            features = joblib.load("features.pkl")
+
+            # Get form values
+            data = {
+                "Pregnancies":              float(request.form["pregnancies"]),
+                "Glucose":                  float(request.form["glucose"]),
+                "BloodPressure":            float(request.form["blood_pressure"]),
+                "SkinThickness":            float(request.form["skin_thickness"]),
+                "Insulin":                  float(request.form["insulin"]),
+                "BMI":                      float(request.form["bmi"]),
+                "DiabetesPedigreeFunction": float(request.form["pedigree"]),
+                "Age":                      float(request.form["age"]),
+            }
+
+            # Prepare input
+            input_data = [[data[f] for f in features]]
+            input_scaled = scaler.transform(input_data)
+
+            # Predict
+            prediction  = model.predict(input_scaled)[0]
+            probability = model.predict_proba(input_scaled)[0]
+            diabetes_prob = round(probability[1] * 100, 1)
+            normal_prob   = round(probability[0] * 100, 1)
+
+            # Risk factors analysis
+            if data["Glucose"] >= 126:
+                risk_factors.append("🔴 Glucose is in diabetic range")
+            elif data["Glucose"] >= 100:
+                risk_factors.append("🟡 Glucose is in pre-diabetic range")
+            else:
+                risk_factors.append("🟢 Glucose is normal")
+
+            if data["BMI"] >= 30:
+                risk_factors.append("🔴 BMI indicates obesity")
+            elif data["BMI"] >= 25:
+                risk_factors.append("🟡 BMI indicates overweight")
+            else:
+                risk_factors.append("🟢 BMI is normal")
+
+            if data["Age"] >= 45:
+                risk_factors.append("🟡 Age is a risk factor (45+)")
+            else:
+                risk_factors.append("🟢 Age is not a major risk factor")
+
+            if data["BloodPressure"] >= 90:
+                risk_factors.append("🔴 High blood pressure detected")
+            elif data["BloodPressure"] >= 80:
+                risk_factors.append("🟡 Slightly elevated blood pressure")
+            else:
+                risk_factors.append("🟢 Blood pressure is normal")
+
+            result = {
+                "prediction":    int(prediction),
+                "diabetes_prob": diabetes_prob,
+                "normal_prob":   normal_prob,
+                "label": "Diabetic" if prediction == 1 else "Not Diabetic",
+                "color": "#ef4444" if prediction == 1 else "#22c55e",
+            }
+
+        except Exception as e:
+            result = {"error": str(e)}
+
+    return render_template("predict.html",
+                           result=result,
+                           risk_factors=risk_factors)
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")
 if __name__ == "__main__":
    app.run(debug=True, host="0.0.0.0")
 
