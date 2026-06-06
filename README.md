@@ -1,11 +1,11 @@
 # 🩸 Blood Glucose Monitor
 
-A clinical Blood Glucose Monitoring Web Application built with **Flask and Python**. Designed for patients and doctors to track, analyze, and manage blood glucose levels with AI-powered predictions and automated email alerts.
+A clinical Blood Glucose Monitoring Web Application built with **Flask and Python**. Designed for patients and doctors to track, analyze, and manage blood glucose levels with AI-powered predictions, ML diabetes prediction, and automated email alerts.
 
 ---
 
 ## 🌐 Live Demo
-https://blood-glucose-monitor-nn39.onrender.com
+👉 https://blood-glucose-monitor-nn39.onrender.com
 
 ---
 
@@ -13,7 +13,7 @@ https://blood-glucose-monitor-nn39.onrender.com
 
 ### Login Page
 
-<img src="screenshots/login.png" width="100%">
+<img src="screenshots/login.png" width="48%"> <img src="screenshots/login2.png" width="48%">
 
 ### Patient Dashboard
 
@@ -46,6 +46,7 @@ https://blood-glucose-monitor-nn39.onrender.com
 - Personalized health recommendations
 - BMI calculator with health category
 - PDF health report generation
+- **ML Diabetes Prediction** — enter health data and get instant AI prediction
 
 ### 🩺 Doctor
 - Separate doctor login
@@ -55,21 +56,32 @@ https://blood-glucose-monitor-nn39.onrender.com
 
 ---
 
-## 🤖 AI Prediction Engine
+## 🤖 AI & ML Features
 
-The AI module uses **Linear Regression (scikit-learn)** to:
+### 1. Glucose Trend Prediction (Linear Regression)
+- Calculates **Risk Score (0–100)** based on reading history
+- Predicts **trend direction** — Rising, Stable, Improving
+- Predicts **next 3 glucose readings**
+- Gives personalized recommendations
 
-- Calculate a **Risk Score (0–100)** based on:
-  - % of readings in diabetic/pre-diabetic range → up to 50 points
-  - Trend direction (slope of readings over time) → up to 30 points
-  - Volatility (standard deviation of readings) → up to 20 points
+### 2. Diabetes Prediction Model (Random Forest) — Level 4
+Trained on the **Pima Indians Diabetes Dataset** (768 real patients):
 
-- Predict **trend direction**:
-  - ↑ Rising — readings getting worse
-  - ↓ Improving — readings getting better
-  - → Stable — consistent pattern
+| Feature | Importance |
+|---|---|
+| Glucose | 28.2% |
+| BMI | 16.6% |
+| Age | 13.8% |
+| Diabetes Pedigree | 11.4% |
+| Insulin | 8.2% |
+| Blood Pressure | 8.2% |
+| Skin Thickness | 7.0% |
+| Pregnancies | 6.5% |
 
-- Predict **next 3 glucose readings** based on current trend
+- **Algorithm:** Random Forest Classifier (100 trees)
+- **Accuracy:** 77.27%
+- **Output:** Diabetic / Not Diabetic with probability score
+- **Risk Factor Analysis:** Color coded breakdown of each health parameter
 
 ---
 
@@ -89,11 +101,14 @@ The AI module uses **Linear Regression (scikit-learn)** to:
 |---|---|
 | Backend | Python, Flask |
 | Frontend | HTML, CSS |
-| AI / ML | scikit-learn, NumPy |
+| AI / ML | scikit-learn, NumPy, Pandas |
+| ML Model | Random Forest Classifier |
 | Graph | Matplotlib |
 | PDF Generation | ReportLab |
 | Data Storage | JSON |
 | Email Alerts | smtplib, Gmail SMTP |
+| Security | python-dotenv |
+| Deployment | Render |
 | Version Control | Git, GitHub |
 
 ---
@@ -113,11 +128,12 @@ pip install -r requirements.txt
 
 ### 3. Configure email alerts
 
-Open `app.py` and update these lines:
-```python
-EMAIL_SENDER   = "your_gmail@gmail.com"
-EMAIL_PASSWORD = "your_app_password"
-DOCTOR_EMAIL   = "doctor_email@gmail.com"
+Create a `.env` file in the project folder:
+```
+SECRET_KEY=your_secret_key
+EMAIL_SENDER=your_gmail@gmail.com
+EMAIL_PASSWORD=your_app_password
+DOCTOR_EMAIL=doctor_email@gmail.com
 ```
 
 > To get an App Password: Google Account → Security → 2-Step Verification → App Passwords
@@ -150,13 +166,26 @@ blood-glucose-monitor/
 │
 ├── app.py                  ← Main Flask application
 ├── requirements.txt        ← Python dependencies
+├── Procfile                ← Render deployment config
+├── .env                    ← Secret credentials (not on GitHub)
 ├── README.md               ← Project documentation
+│
+├── model.pkl               ← Trained Random Forest model
+├── scaler.pkl              ← Feature scaler
+├── features.pkl            ← Feature names
+│
+├── m1_model/               ← ML training files
+│   ├── diabetes.csv        ← Pima Indians dataset
+│   └── train_model.py      ← Model training script
+│
+├── screenshots/            ← App screenshots
 │
 └── templates/
     ├── login.html          ← Login page
     ├── register.html       ← Register page
     ├── dashboard.html      ← Patient dashboard
     ├── stats.html          ← Stats, graph & AI prediction
+    ├── predict.html        ← ML diabetes prediction
     └── doctor.html         ← Doctor panel
 ```
 
@@ -171,17 +200,21 @@ blood-glucose-monitor/
 | 3A | PDF health report generator | ✅ Complete |
 | 3B | Flask web application | ✅ Complete |
 | 3C | Email alerts for doctors | ✅ Complete |
-| 4 | ML model with real diabetes dataset | 🔜 Coming soon |
+| 4 | ML diabetes prediction — Random Forest | ✅ Complete |
+| 5 | Database upgrade — SQLite | 🔜 Coming soon |
+| 6 | Mobile responsive UI | 🔜 Coming soon |
+| 7 | IoT sensor integration | 🔜 Coming soon |
 
 ---
 
 ## 🎓 About
 
-Built by a **Madhan kumar    2nd year Biomedical Engineering student** as a practical project combining:
+Built by a **Madhan Kumar P 2nd year Biomedical Engineering ** as a practical project combining:
 - Biomedical domain knowledge (glucose ranges, BMI, risk assessment)
 - Python programming and web development
 - AI and Machine Learning in healthcare
 - Real world clinical application design
+- Live deployment on cloud
 
 **Domain:** Biomedical + Python + AI in Healthcare
 
